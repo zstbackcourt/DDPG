@@ -37,26 +37,26 @@ class ActorNetwork(object):
     self.optimize = self.optimizer.apply_gradients(zip(self.actor_gradients, self.actor_variables))
 
 
-  # def _build_network(self, name):
-  #   input_s = tf.placeholder(tf.float32, [None, self.state_size])
-  #   with tf.variable_scope(name):
-  #     layer_1 = tf_utils.fc(input_s, self.n_h1, scope="fc1", activation_fn=tf.nn.relu,
-  #       initializer=tf.contrib.layers.variance_scaling_initializer(mode="FAN_IN"))
-  #     layer_2 = tf_utils.fc(layer_1, self.n_h2, scope="fc2", activation_fn=tf.nn.relu,
-  #       initializer=tf.contrib.layers.variance_scaling_initializer(mode="FAN_IN"))
-  #     action_values = tf_utils.fc(layer_2, self.action_size, scope="out", activation_fn=tf.nn.tanh,
-  #       initializer=tf.random_uniform_initializer(-3e-3, 3e-3))
-  #   actor_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=name)
-  #   return input_s, actor_variables, action_values
-  def _build_network(self,name):
-    input_s = tf.placeholder(tf.float32, [None, self.state_size], name='Ob')
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
-      p1 = lkrelu(fc(input_s, 'pi_fc1', nh=16, init_scale=np.sqrt(2.0)))
-      p2 = lkrelu(fc(p1, 'pi_fc2', nh=32, init_scale=np.sqrt(2.0)))
-      p3 = lkrelu(fc(p2, 'pi_fc3', nh=16, init_scale=np.sqrt(2.0)))
-      pi = tf.nn.tanh(fc(p3, 'pi', nh=self.action_size, init_scale=np.sqrt(2.0)))
+  def _build_network(self, name):
+    input_s = tf.placeholder(tf.float32, [None, self.state_size])
+    with tf.variable_scope(name):
+      layer_1 = tf_utils.fc(input_s, self.n_h1, scope="fc1", activation_fn=tf.nn.relu,
+        initializer=tf.contrib.layers.variance_scaling_initializer(mode="FAN_IN"))
+      layer_2 = tf_utils.fc(layer_1, self.n_h2, scope="fc2", activation_fn=tf.nn.relu,
+        initializer=tf.contrib.layers.variance_scaling_initializer(mode="FAN_IN"))
+      action_values = tf_utils.fc(layer_2, self.action_size, scope="out", activation_fn=tf.nn.tanh,
+        initializer=tf.random_uniform_initializer(-3e-3, 3e-3))
     actor_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=name)
-    return input_s,actor_variables,pi
+    return input_s, actor_variables, action_values
+  # def _build_network(self,name):
+  #   input_s = tf.placeholder(tf.float32, [None, self.state_size], name='Ob')
+  #   with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+  #     p1 = lkrelu(fc(input_s, 'pi_fc1', nh=16, init_scale=np.sqrt(2.0)))
+  #     p2 = lkrelu(fc(p1, 'pi_fc2', nh=32, init_scale=np.sqrt(2.0)))
+  #     p3 = lkrelu(fc(p2, 'pi_fc3', nh=16, init_scale=np.sqrt(2.0)))
+  #     pi = tf.nn.tanh(fc(p3, 'pi', nh=self.action_size, init_scale=np.sqrt(2.0)))
+  #   actor_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=name)
+  #   return input_s,actor_variables,pi
 
 
   def get_action(self, state, sess):

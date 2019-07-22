@@ -39,29 +39,29 @@ class CriticNetwork(object):
     self.action_gradients = tf.gradients(self.q_value, self.action)
 
 
-  # def _build_network(self, name):
-  #   input_s = tf.placeholder(tf.float32, [None, self.state_size])
-  #   action = tf.placeholder(tf.float32, [None, self.action_size])
-  #   with tf.variable_scope(name):
-  #     layer_1 = tf_utils.fc(input_s, self.n_h1, scope="fc1", activation_fn=tf.nn.relu,
-  #       initializer=tf.contrib.layers.variance_scaling_initializer(mode="FAN_IN"))
-  #     # tf.concat((layer_1, action), 1)
-  #     layer_2 = tf_utils.fc(tf.concat((layer_1, action), 1), self.n_h2, scope="fc2", activation_fn=tf.nn.relu,
-  #       initializer=tf.contrib.layers.variance_scaling_initializer(mode="FAN_IN"))
-  #     q_value = tf_utils.fc(layer_2, 1, scope="out", initializer=tf.random_uniform_initializer(-3e-3, 3e-3))
-  #   critic_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=name)
-  #   return input_s, action, critic_variables, tf.squeeze(q_value)
-  def _build_network(self,name):
-    Ob = tf.placeholder(tf.float32, [None, self.state_size], name='Ob')
-    Act = tf.placeholder(tf.float32, [None, self.action_size], name="Act")
-    X = tf.concat([Ob, Act], axis=1, name="Ob_Act")
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
-      p1 = lkrelu(fc(X, 'vf_fc1', nh=16, init_scale=np.sqrt(2.0)))
-      p2 = lkrelu(fc(p1, 'vf_fc2', nh=32, init_scale=np.sqrt(2.0)))
-      p3 = lkrelu(fc(p2, 'vf_fc3', nh=16, init_scale=np.sqrt(2.0)))
-      vf = fc(p3, 'vf', nh=1, init_scale=np.sqrt(2.0))
+  def _build_network(self, name):
+    input_s = tf.placeholder(tf.float32, [None, self.state_size])
+    action = tf.placeholder(tf.float32, [None, self.action_size])
+    with tf.variable_scope(name):
+      layer_1 = tf_utils.fc(input_s, self.n_h1, scope="fc1", activation_fn=tf.nn.relu,
+        initializer=tf.contrib.layers.variance_scaling_initializer(mode="FAN_IN"))
+      # tf.concat((layer_1, action), 1)
+      layer_2 = tf_utils.fc(tf.concat((layer_1, action), 1), self.n_h2, scope="fc2", activation_fn=tf.nn.relu,
+        initializer=tf.contrib.layers.variance_scaling_initializer(mode="FAN_IN"))
+      q_value = tf_utils.fc(layer_2, 1, scope="out", initializer=tf.random_uniform_initializer(-3e-3, 3e-3))
     critic_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=name)
-    return Ob, Act,critic_variables,vf
+    return input_s, action, critic_variables, tf.squeeze(q_value)
+  # def _build_network(self,name):
+  #   Ob = tf.placeholder(tf.float32, [None, self.state_size], name='Ob')
+  #   Act = tf.placeholder(tf.float32, [None, self.action_size], name="Act")
+  #   X = tf.concat([Ob, Act], axis=1, name="Ob_Act")
+  #   with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+  #     p1 = lkrelu(fc(X, 'vf_fc1', nh=16, init_scale=np.sqrt(2.0)))
+  #     p2 = lkrelu(fc(p1, 'vf_fc2', nh=32, init_scale=np.sqrt(2.0)))
+  #     p3 = lkrelu(fc(p2, 'vf_fc3', nh=16, init_scale=np.sqrt(2.0)))
+  #     vf = fc(p3, 'vf', nh=1, init_scale=np.sqrt(2.0))
+  #   critic_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=name)
+  #   return Ob, Act,critic_variables,vf
 
 
   def get_qvalue_target(self, state, action, sess):

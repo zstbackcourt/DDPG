@@ -7,6 +7,7 @@ import numpy as np
 import random
 from collections import namedtuple
 
+# cur_step:ob action:action next_step:next_ob reward:reward done:done
 Step = namedtuple('Step','cur_step action next_step reward done')
 
 
@@ -41,16 +42,16 @@ class ExpReplay():
     while len(self.mem) > self.mem_size:
       self.mem = self.mem[int(len(self.mem)*self.drop_rate):]
 
-
-  def get_last_state(self):
-    if len(self.mem) > abs(self.kth):
-      if self.kth == -1:
-        return self.mem[-1].cur_step
-      if len(self.state_size) == 1:
-        return [s.cur_step for s in self.mem[-abs(self.kth):]]
-      last_state = np.stack([s.cur_step for s in self.mem[-abs(self.kth):]], axis=len(self.state_size))
-      return np.stack([s.cur_step for s in self.mem[-abs(self.kth):]], axis=len(self.state_size))
-    return []
+  #
+  # def get_last_state(self):
+  #   if len(self.mem) > abs(self.kth):
+  #     if self.kth == -1:
+  #       return self.mem[-1].cur_step
+  #     if len(self.state_size) == 1:
+  #       return [s.cur_step for s in self.mem[-abs(self.kth):]]
+  #     last_state = np.stack([s.cur_step for s in self.mem[-abs(self.kth):]], axis=len(self.state_size))
+  #     return np.stack([s.cur_step for s in self.mem[-abs(self.kth):]], axis=len(self.state_size))
+  #   return []
 
 
   def sample(self, num=None):
