@@ -61,3 +61,11 @@ def flatten(x):
   return tf.reshape(x, [-1, int(x.get_shape()[1]*x.get_shape()[2]*x.get_shape()[3])])
 
 
+def lkrelu(x, slope=0.05):
+  """
+  定义lkrelu激活函数
+  :param x:
+  :param slope:
+  :return:
+  """
+  return tf.maximum(slope * x, x)
